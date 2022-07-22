@@ -12,6 +12,7 @@ public class SpuAttrValueVo extends SpuAttrValueEntity {
     private List<String> valueSelected;
 
     public void setValueSelected(List<String> valueSelected) {
+        // 如果接受的集合为空，则不设置
         if (CollectionUtils.isEmpty(valueSelected)){
             return;
         }

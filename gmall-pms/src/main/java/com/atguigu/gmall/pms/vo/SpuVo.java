@@ -13,11 +13,12 @@ import java.util.List;
 public class SpuVo extends SpuEntity {
 
     // 图片信息
-    private List<?> spuImages;
+    private List<String> spuImages;
 
     // 基本属性信息
-    private List<?> baseAttrs;
+    private List<SpuAttrValueVo> baseAttrs;
 
     // sku信息
-    private List<?> skus;
+    private List<SkuVo> skus;
+
 }

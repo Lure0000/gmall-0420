@@ -1,5 +1,6 @@
 package com.atguigu.gmall.pms.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -21,8 +22,11 @@ public class SpuDescEntity implements Serializable {
 
 	/**
 	 * 商品id
+	 * 注意：spuDesc使用的是spu的主键，需要根据spu的结果设置
+	 * 而在application.yml配置的主键策略是自增长
+	 * 如果不在这里设置为手动设置主键，会报错
 	 */
-	@TableId
+	@TableId(type = IdType.INPUT)
 	private Long spuId;
 	/**
 	 * 商品介绍

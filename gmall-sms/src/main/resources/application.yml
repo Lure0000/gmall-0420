@@ -9,6 +9,11 @@ mybatis-plus:
     global-config:
         db-config:
             id-type: auto
+spring:
+    cloud:
+        alibaba:
+            seata:
+                tx-service-group: gmall_tx_group
 #spring:
 #    cloud:
 #        nacos:
@@ -18,6 +23,9 @@ mybatis-plus:
 #            transport:
 #                dashboard: localhost:8080
 #                port: 8719
+#       alibaba:
+#            seata:
+#                tx-service-group: gmall_tx_group
 #    zipkin:
 #        base-url: http://localhost:9411
 #        discovery-client-enabled: false

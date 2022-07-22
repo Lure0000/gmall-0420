@@ -1,7 +1,10 @@
 package com.atguigu.gmall.pms.controller;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
+import com.atguigu.gmall.pms.feign.GmallSmsClient;
+import com.atguigu.gmall.pms.vo.SpuVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +37,24 @@ public class SpuController {
     @Autowired
     private SpuService spuService;
 
+    @Autowired
+    private GmallSmsClient smsClient;
+
     @ApiOperation("按照分类id分页查询商品列表 0-全站 n-本类")
     @GetMapping("category/{categoryId}")
     public ResponseVo<PageResultVo> querySpuByCidPage(@PathVariable("categoryId")Long cid, PageParamVo pageParamVo){
         PageResultVo resultVo = this.spuService.querySpuByCidPage(cid, pageParamVo);
         return ResponseVo.ok(resultVo);
+    }
+
+    /**
+     * 大保存
+     */
+    @PostMapping
+    @ApiOperation("大保存")
+    public ResponseVo<Object> save(@RequestBody SpuVo spu) throws FileNotFoundException {
+        this.spuService.bigSave(spu);
+        return ResponseVo.ok();
     }
 
     /**
@@ -64,16 +80,7 @@ public class SpuController {
         return ResponseVo.ok(spu);
     }
 
-    /**
-     * 保存
-     */
-    @PostMapping
-    @ApiOperation("保存")
-    public ResponseVo<Object> save(@RequestBody SpuEntity spu){
-		spuService.save(spu);
 
-        return ResponseVo.ok();
-    }
 
     /**
      * 修改
