@@ -21,7 +21,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service("spuService")
 public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements SpuService {
 
@@ -58,6 +62,11 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
 
     @Autowired
     private SkuAttrValueService attrValueService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public PageResultVo queryPage(PageParamVo paramVo) {
@@ -133,6 +142,18 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, SpuEntity> implements
 
         // 2.保存sku相关信息
         this.saveSkus(spu, spuId);
+
+        // 新增商品时实现搜索服务的数据同步
+        sendMessage(spuId,"insert");
+    }
+
+    // 生产者发送消息
+    private void sendMessage(Long id, String type){
+        try {
+            this.rabbitTemplate.convertAndSend("PMS_ITEM_EXCHANGE", "item." + type, id);
+        } catch (Exception e) {
+            logger.error("{}商品消息发送异常，商品id：{}", type, id, e);
+        }
     }
 
     /**
